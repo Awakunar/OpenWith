@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Obre amb
+settings=Paràmetres
+
+[action]
+playlist=Llista de reproducció
+audio_library=Llibreria d'àudio
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=Enllaç URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Camí del programa
+label_title=Títol
+label_params=Paràmetres
+button_add=Afegeix
+button_delete=Suprimeix

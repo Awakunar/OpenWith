@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Ava koos
+settings=Seaded
+
+[action]
+playlist=Mänguloend
+audio_library=Audiokogu
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=Link
+
+[settings_form]
+category_title=OpenWith
+label_path=Programmi rada
+label_title=Pealkiri
+label_params=Parameetrid
+button_add=Lisa
+button_delete=Eemalda

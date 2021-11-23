@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Відкрити за допомогою...
+settings=Налаштування
+
+[action]
+playlist=Список відтворення
+audio_library=Фонотека
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=Посилання
+
+[settings_form]
+category_title=OpenWith
+label_path=Шлях запуску
+label_title=Назва
+label_params=Параметри
+button_add=Додати
+button_delete=Видалити

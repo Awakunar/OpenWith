@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Openen Met
+settings=Instellingen
+
+[action]
+playlist=Afspeellijst
+audio_library=Muziekbibliotheek
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Programma pad
+label_title=Titel
+label_params=Parameters
+button_add=Toevoegen
+button_delete=Verwijderen

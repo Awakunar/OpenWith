@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Otevřít pomocí…
+settings=Nastavení
+
+[action]
+playlist=Playlist
+audio_library=Hudební knihovna
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Umístění programu
+label_title=Název
+label_params=Parametry
+button_add=Přidat
+button_delete=Odstranit

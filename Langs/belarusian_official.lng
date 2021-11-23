@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Адкрыць з дапамогаю...
+settings=Налады
+
+[action]
+playlist=Плэй-ліст
+audio_library=Бібліятэка музыкі
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=Спасылку
+
+[settings_form]
+category_title=Адкрыць з дапамогаю
+label_path=Шлях запуску
+label_title=Загаловак
+label_params=Параметры
+button_add=Дадаць
+button_delete=Выдаліць

@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Apri con
+settings=Impostazioni
+
+[action]
+playlist=Playlist
+audio_library=Libreria audio
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Percorso
+label_title=Titolo
+label_params=Parametri
+button_add=Aggiungi
+button_delete=Elimina

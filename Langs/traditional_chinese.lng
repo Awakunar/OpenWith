@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=打開方式
+settings=設定
+
+[action]
+playlist=播放清單
+audio_library=媒體庫
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL
+
+[settings_form]
+category_title=打開方式
+label_path=程式路徑
+label_title=標題
+label_params=參數
+button_add=增加
+button_delete=刪除

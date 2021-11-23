@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Отвори с
+settings=Настройки
+
+[action]
+playlist=Плейлист
+audio_library=Музикална библиотека
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL адрес
+
+[settings_form]
+category_title=Отвори с
+label_path=Път до програмата
+label_title=Заглавие
+label_params=Параметри
+button_add=Добави
+button_delete=Изтрий

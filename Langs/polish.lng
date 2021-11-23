@@ -1,0 +1,22 @@
+﻿[menu]
+openwith=Otwórz za pomocą
+settings=Ustawienia
+
+[action]
+playlist=Lista odtwarzania
+audio_library=Biblioteka
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=Adres URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Ścieżka programu
+label_title=Tytuł
+label_params=Parametry
+button_add=Dodaj...
+button_delete=Usuń
