@@ -188,7 +188,7 @@ begin
   PropListSetInt32(LMenuItem, AIMP_MENUITEM_PROPID_DEFAULT, 1);
   // Programs Add Button
   CheckResult(FService.CreateControl(FForm, LPanel, MakeString('button_add'), Self, IAIMPUIButton, FButtonAdd));
-  CheckResult(FButtonAdd.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(312, 272, 80, 25))));
+  CheckResult(FButtonAdd.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(292, 272, 100, 25))));
   PropListSetInt32(FButtonAdd, AIMPUI_BUTTON_PROPID_STYLE, AIMPUI_FLAGS_BUTTON_STYLE_DROPDOWNBUTTON);
   PropListSetObj(FButtonAdd, AIMPUI_BUTTON_PROPID_DROPDOWNMENU, FDropDownMenuAdd);
   // Programs Delete Button
