@@ -87,9 +87,11 @@ type
     procedure OnURLButtonClick(const Sender: IUnknown);
     procedure OnParamsButtonClick(const Sender: IUnknown);
     procedure OnPopupItemClick(const Sender: IUnknown);
+    procedure OnLabelMouseClick(const Sender: IUnknown; Button: TAIMPUIMouseButton; Shift: TShiftState; X, Y: Integer);
 
     procedure CreateProgsList(AParent: IAIMPUIWinControl);
     procedure CreateEditor(AParent: IAIMPUIWinControl);
+    procedure CreateImport(AParent: IAIMPUIWinControl);
 
     function GetAppTitle(const FileName: string): string;
     procedure AddNodeToTreeList(const ID: string; Focused: Boolean = False);
@@ -119,7 +121,10 @@ uses
   apiMenu,
   apiWrappers,
   apiWrappersGUI,
-  apiFileManager;
+  apiFileManager,
+  Neon.Core.Types,
+  Neon.Core.Persistence,
+  Neon.Core.Persistence.JSON;
 
 constructor TSettingItemEx.Create(const ATitle, APath, AParam: string; AType: TItemType; AImage: IAIMPImage);
 begin
@@ -155,6 +160,7 @@ begin
 
   CreateProgsList(LCategory);
   CreateEditor(LCategory);
+  CreateImport(LCategory);
 
   if CoreGetService(IID_IAIMPServiceVersionInfo, LVersionInfo) and (LVersionInfo.GetBuildNumber >= 2130) then
     FUIStyleLight := PropListGetInt32(FForm, AIMPUI_FORM_PROPID_STYLE) = AIMPUI_STYLE_LIGHT;
@@ -247,6 +253,24 @@ begin
   CheckResult(FPopupMenuParams.Add(MakeString('openwith.popup.stop'), LMenuItem));
   PropListSetObj(LMenuItem, AIMP_MENUITEM_PROPID_EVENT, TAIMPUINotifyEventAdapter.Create(OnPopupItemClick));
 end;
+
+procedure TSettingsForm.CreateImport(AParent: IAIMPUIWinControl);
+
+  procedure CreateLabel(AParent: IAIMPUIWinControl; const AName: string; Alignment: TRect);
+  var LLabel: IAIMPUILabel;
+  begin
+    CheckResult(FService.CreateControl(FForm, AParent, MakeString(AName),
+      TAIMPUIMouseEventsAdapter.Create(nil, OnLabelMouseClick, nil, nil, nil), IAIMPUILabel, LLabel));
+    CheckResult(LLabel.SetPlacement(TAIMPUIControlPlacement.Create(ualRight, 0, Alignment)));
+    PropListSetInt32(LLabel, AIMPUI_LABEL_PROPID_AUTOSIZE, 1);
+    PropListSetObj(LLabel, AIMPUI_LABEL_PROPID_URL, MakeString('fakeurl'));
+  end;
+
+begin
+  CreateLabel(AParent, 'label_export', Rect(10, 0, 5, 0));
+  CreateLabel(AParent, 'label_import', NullRect);
+end;
+
 {$ENDREGION}
 
 
@@ -347,14 +371,13 @@ procedure TSettingsForm.AddNodeToTreeList(const ID: string; Focused: Boolean);
 var
   LRootNode, LNode: IAIMPUITreeListNode;
 begin
-  if Succeeded(FTreeListPrograms.GetRootNode(IID_IAIMPUITreeListNode, LRootNode)) then
-    if Succeeded(LRootNode.Add(LNode)) then
-    begin
-      CheckResult(LNode.SetValue(0, MakeString(ID)));
+  if Succeeded(FTreeListPrograms.GetRootNode(IID_IAIMPUITreeListNode, LRootNode)) and Succeeded(LRootNode.Add(LNode)) then
+  begin
+    CheckResult(LNode.SetValue(0, MakeString(ID)));
 
-      if Focused and Succeeded(FTreeListPrograms.SetFocus) then
-        CheckResult(FTreeListPrograms.SetFocused(LNode));
-    end;
+    if Focused and Succeeded(FTreeListPrograms.SetFocus) then
+      CheckResult(FTreeListPrograms.SetFocused(LNode));
+  end;
 end;
 
 procedure TSettingsForm.OnURLButtonClick(const Sender: IInterface);
@@ -498,6 +521,107 @@ begin
         end;
     end;
     DoModified;
+  end;
+end;
+
+procedure TSettingsForm.OnLabelMouseClick(const Sender: IInterface; Button: TAIMPUIMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  LFileName: IAIMPString;
+  LFileDialogs: IAIMPUIFileDialogs;
+  LTmpSettings: TSettings;
+  LNeonConfig: INeonConfiguration;
+  LItemID: string;
+begin
+  CheckResult(FService.QueryInterface(IAIMPUIFileDialogs, LFileDialogs));
+
+  if PropListGetStr((Sender as IAIMPUIControl), AIMPUI_CONTROL_PROPID_NAME) = 'label_import' then
+  begin
+    if Succeeded(LFileDialogs.ExecuteOpenDialog(FForm.GetHandle, nil, MakeString('|*.json'), LFileName)) then
+    begin
+      if not TFile.Exists(IAIMPStringToString(LFileName)) then
+        Exit;
+
+      LTmpSettings := TSettings.Create;
+      try
+        LNeonConfig := TNeonConfiguration.Default.SetMembers([TNeonMembers.Standard, TNeonMembers.Fields]);
+        LNeonConfig.GetSerializers.RegisterSerializer(TImageContainerSerializer);
+        TNeon.JSONToObject(LTmpSettings, TFile.ReadAllText(IAIMPStringToString(LFileName), TEncoding.UTF8), LNeonConfig);
+
+        if LTmpSettings.Count <= 0 then
+          Exit;
+
+        var LSortedKeys: TList<string> := LTmpSettings.GetSortedByOrderKeys;
+        try
+          for var LCount: Integer := 0 to LSortedKeys.Count - 1 do
+          begin
+            if (LTmpSettings[LSortedKeys[LCount]].Title.Length = 0) or (LTmpSettings[LSortedKeys[LCount]].Path.Length = 0) then
+              Continue;
+
+            LItemID := TUtilities.CreateGUID;
+
+            FSettingsList.Add(LItemID,
+              TSettingItemEx.Create(
+              LTmpSettings[LSortedKeys[LCount]].Title,
+              LTmpSettings[LSortedKeys[LCount]].Path,
+              LTmpSettings[LSortedKeys[LCount]].Param,
+              LTmpSettings[LSortedKeys[LCount]].ItemType,
+              TImageContainer.ToImage(LTmpSettings[LSortedKeys[LCount]].Image, 32))
+              );
+
+            AddNodeToTreeList(LItemID);
+          end;
+        finally
+          FreeAndNil(LSortedKeys);
+        end;
+
+        OnStructChanged(nil);
+        DoModified;
+      finally
+        FreeAndNil(LTmpSettings);
+      end;
+    end;
+  end
+  else
+  begin
+    var LFilterIndex: Integer;
+
+    if Succeeded(LFileDialogs.ExecuteSaveDialog(FForm.GetHandle, nil, MakeString('|*.json'), LFileName, LFilterIndex)) then
+    begin
+      var LNode: IAIMPUITreeListNode;
+      var LRootNode: IAIMPUITreeListNode;
+      var LTempStr: IAIMPString;
+
+      LTmpSettings := TSettings.Create;
+      try
+        if Succeeded(FTreeListPrograms.GetRootNode(IID_IAIMPUITreeListNode, LRootNode)) then
+        begin
+          for var LCount: Integer := 0 to LRootNode.GetCount - 1 do
+          begin
+            CheckResult(LRootNode.Get(LCount, IID_IAIMPUITreeListNode, LNode));
+            CheckResult(LNode.GetValue(0, LTempStr));
+            LItemID := IAIMPStringToString(LTempStr);
+
+            if FSettingsList.ContainsKey(LItemID) then
+              LTmpSettings.Add(LItemID,
+                TSettingItem.Create(
+                FSettingsList[LItemID].Title,
+                FSettingsList[LItemID].Path,
+                FSettingsList[LItemID].Param,
+                LCount,
+                FSettingsList[LItemID].ItemType,
+                TImageContainer.FromImage(FSettingsList[LItemID].Icon)
+                ));
+          end;
+        end;
+
+        LNeonConfig := TNeonConfiguration.Default.SetMembers([TNeonMembers.Standard, TNeonMembers.Fields]);
+        LNeonConfig.GetSerializers.RegisterSerializer(TImageContainerSerializer);
+        TFile.WriteAllText(IAIMPStringToString(LFileName).Replace('.json.json', '.json'),
+          TNeon.ObjectToJSONString(LTmpSettings, LNeonConfig), TEncoding.UTF8);
+      finally
+        FreeAndNil(LTmpSettings);
+      end;
+    end;
   end;
 end;
 
