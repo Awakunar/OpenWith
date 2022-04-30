@@ -42,7 +42,7 @@ function TOpenWithPlugin.InfoGet(Index: Integer): PWideChar;
 begin
   case index of
     AIMP_PLUGIN_INFO_NAME:
-      Result := 'OpenWith 1.6.1';
+      Result := 'OpenWith 1.6.5';
     AIMP_PLUGIN_INFO_AUTHOR:
       Result := 'Awakunar';
     AIMP_PLUGIN_INFO_SHORT_DESCRIPTION:
