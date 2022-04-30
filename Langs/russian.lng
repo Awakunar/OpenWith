@@ -20,3 +20,7 @@ label_title=Название
 label_params=Параметры
 button_add=Добавить
 button_delete=Удалить
+label_import=Импортировать
+label_import.h=Импортировать из файла
+label_export=Экспортировать
+label_export.h=Экспортировать в файл

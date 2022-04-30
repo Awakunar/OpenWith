@@ -20,3 +20,7 @@ label_title=Título
 label_params=Parámetros
 button_add=Agregar
 button_delete=Eliminar
+label_import=Importar
+label_import.h=Importar desde archivo
+label_export=Exportar
+label_export.h=Exportar a archivo

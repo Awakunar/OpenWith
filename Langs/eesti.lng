@@ -20,3 +20,7 @@ label_title=Pealkiri
 label_params=Parameetrid
 button_add=Lisa
 button_delete=Eemalda
+label_import=Impordi
+label_import.h=Impordi failist
+label_export=Ekspordi
+label_export.h=Ekspordi faili

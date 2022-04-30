@@ -20,3 +20,7 @@ label_title=Název
 label_params=Parametry
 button_add=Přidat
 button_delete=Odstranit
+label_import=Importovat
+label_import.h=Import ze souboru
+label_export=Exportovat
+label_export.h=Export do souboru

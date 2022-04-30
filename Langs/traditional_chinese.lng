@@ -20,3 +20,7 @@ label_title=標題
 label_params=參數
 button_add=增加
 button_delete=刪除
+label_import=匯入
+label_import.h=從檔案匯入
+label_export=匯出
+label_export.h=匯出至檔案

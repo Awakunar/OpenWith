@@ -20,3 +20,7 @@ label_title=Загаловак
 label_params=Параметры
 button_add=Дадаць
 button_delete=Выдаліць
+label_import=Імпартаваць
+label_import.h=Імпартаваць з файла
+label_export=Экспартаваць
+label_export.h=Экспартаваць у файл

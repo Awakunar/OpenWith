@@ -20,3 +20,7 @@ label_title=Заглавие
 label_params=Параметри
 button_add=Добави
 button_delete=Изтрий
+label_import=Добави
+label_import.h=Добави от файл
+label_export=Запиши
+label_export.h=Запиши във файл

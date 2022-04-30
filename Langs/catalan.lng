@@ -20,3 +20,7 @@ label_title=Títol
 label_params=Paràmetres
 button_add=Afegeix
 button_delete=Suprimeix
+label_import=Importa
+label_import.h=Importa del fitxer
+label_export=Exporta
+label_export.h=Exporta al fitxer
