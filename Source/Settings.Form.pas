@@ -585,7 +585,7 @@ begin
   begin
     var LFilterIndex: Integer;
 
-    if Succeeded(LFileDialogs.ExecuteSaveDialog(FForm.GetHandle, nil, MakeString('|*.json'), LFileName, LFilterIndex)) then
+    if Succeeded(LFileDialogs.ExecuteSaveDialog(FForm.GetHandle, nil, MakeString('|*.json;'), LFileName, LFilterIndex)) then
     begin
       var LNode: IAIMPUITreeListNode;
       var LRootNode: IAIMPUITreeListNode;
@@ -616,8 +616,7 @@ begin
 
         LNeonConfig := TNeonConfiguration.Default.SetMembers([TNeonMembers.Standard, TNeonMembers.Fields]);
         LNeonConfig.GetSerializers.RegisterSerializer(TImageContainerSerializer);
-        TFile.WriteAllText(IAIMPStringToString(LFileName).Replace('.json.json', '.json'),
-          TNeon.ObjectToJSONString(LTmpSettings, LNeonConfig), TEncoding.UTF8);
+        TFile.WriteAllText(IAIMPStringToString(LFileName), TNeon.ObjectToJSONString(LTmpSettings, LNeonConfig), TEncoding.UTF8);
       finally
         FreeAndNil(LTmpSettings);
       end;
