@@ -1,0 +1,26 @@
+﻿[menu]
+openwith=Ouvrir avec
+settings=Réglages
+
+[action]
+playlist=Liste de lecture
+audio_library=Bibliotheque musicale
+
+[common]
+openwith.popup.files=%Files%
+openwith.popup.folders=%Folders%
+openwith.popup.pause=%AIMP Pause%
+openwith.popup.stop=%AIMP Stop%
+openwith.popup.addurl=URL
+
+[settings_form]
+category_title=OpenWith
+label_path=Chemin du programme
+label_title=Titre
+label_params=Paramètres
+button_add=Ajouter
+button_delete=Supprimer
+label_import=Importer
+label_import.h=Importer depuis un fichier
+label_export=Exporter
+label_export.h=Exporter vers un fichier
