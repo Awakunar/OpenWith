@@ -686,8 +686,8 @@ begin
   FUIStyleLight := Style = AIMPUI_STYLE_LIGHT;
 end;
 
-procedure TSettingsForm.OnCustomDrawNode(Sender: IAIMPUITreeList; DC: HDC; R: TRect; Node: IAIMPUITreeListNode;
-  var Handled: LongBool);
+procedure TSettingsForm.OnCustomDrawNode(Sender: IAIMPUITreeList;
+  DC: HDC; R: TRect; Node: IAIMPUITreeListNode; var Handled: LongBool);
 const
   clItemSelectedLight = TColor($9FD5FF);
   clItemSelectedDark = TColor($23507C);
@@ -698,15 +698,22 @@ const
   clItemTwoDark = TColor($2A2A2A);
 var
   LCanvas: TCanvas;
-  LTempStr: IAIMPString;
-  LRect: TRect;
-  LItemID: string;
+  LDpi: Integer;
+  LDpiAware: IAIMPDPIAware;
   LItem: TSettingItemEx;
+  LItemID: string;
+  LRect: TRect;
+  LTempStr: IAIMPString;
 begin
   LCanvas := TCanvas.Create;
   try
     LCanvas.Handle := DC;
     Handled := True;
+
+    if Supports(Sender, IAIMPDPIAware, LDpiAware) then
+      LDpi := LDpiAware.GetDPI
+    else
+      LDpi := 96;
 
     Node.GetValue(0, LTempStr);
     LItemID := IAIMPStringToString(LTempStr);
@@ -732,22 +739,24 @@ begin
 
     // Icon
     if Assigned(LItem.Icon) then
-      LItem.Icon.Draw(LCanvas.Handle, Bounds(10, 10, 32, 32), AIMP_IMAGE_DRAW_QUALITY_HIGH, nil);
+      LItem.Icon.Draw(LCanvas.Handle,
+        Bounds(dpiValue(10, LDpi), dpiValue(10, LDpi), dpiValue(32, LDpi), dpiValue(32, LDpi)),
+        AIMP_IMAGE_DRAW_QUALITY_HIGH, nil);
 
     // Text
     LCanvas.Font.Color := IfThen(FUIStyleLight, clBlack);
     LCanvas.Font.Quality := fqClearType;
     // Title
     LCanvas.Font.Style := LCanvas.Font.Style + [fsBold];
-    LCanvas.TextOut(R.Left + 52, R.Top + 4, LItem.Title);
+    LCanvas.TextOut(R.Left + dpiValue(52, LDpi), R.Top + dpiValue(4, LDpi), LItem.Title);
     LCanvas.Font.Style := LCanvas.Font.Style - [fsBold];
     // Path
-    LCanvas.TextOut(R.Left + 52, R.Top + 18, IfThen(LItem.ItemType = Url, 'URL: ', FPathLangStr + ': '));
-    LRect := Bounds(62 + LCanvas.TextWidth(FPathLangStr), 18, R.Width - (70 + LCanvas.TextWidth(FPathLangStr)), 20);
+    LCanvas.TextOut(R.Left + dpiValue(52, LDpi), R.Top + dpiValue(18, LDpi), IfThen(LItem.ItemType = Url, 'URL: ', FPathLangStr + ': '));
+    LRect := Bounds(62 + LCanvas.TextWidth(FPathLangStr), dpiValue(18, LDpi), R.Width - (dpiValue(70, LDpi) + LCanvas.TextWidth(FPathLangStr)), 20);
     DrawText(LCanvas.Handle, LItem.Path, LItem.Path.Length, LRect, DT_PATH_ELLIPSIS or DT_NOPREFIX);
     // Params
-    LCanvas.TextOut(R.Left + 52, R.Top + 32, FParamLangStr + ': ');
-    LRect := Bounds(62 + LCanvas.TextWidth(FPathLangStr), 32, R.Width - (70 + LCanvas.TextWidth(FPathLangStr)), 20);
+    LCanvas.TextOut(R.Left + dpiValue(52, LDpi), R.Top + dpiValue(32, LDpi), FParamLangStr + ': ');
+    LRect := Bounds(dpiValue(62, LDpi) + LCanvas.TextWidth(FPathLangStr), dpiValue(32, LDpi), R.Width - (dpiValue(70, LDpi) + LCanvas.TextWidth(FPathLangStr)), 20);
     DrawText(LCanvas.Handle, LItem.Param, LItem.Param.Length, LRect, DT_WORD_ELLIPSIS or DT_NOPREFIX);
 
     if PropListGetInt32(Node, AIMPUI_WINCONTROL_PROPID_FOCUSED) = 1 then
