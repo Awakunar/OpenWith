@@ -106,6 +106,7 @@ begin
   FreeAndNil(TGlobals.Tasks);
   FreeAndNil(TGlobals.Settings);
   TGlobals.SettingsFrame := nil;
+  inherited;
 end;
 
 end.
