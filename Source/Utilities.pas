@@ -42,8 +42,8 @@ type
   end;
 
 function IfThen(AValue: Boolean; const ATrue: TColor; AFalse: TColor = clWhite): TColor; overload; inline;
-
 function dpiValue(const AValue: Integer; ADpi: Integer): Integer;
+
 implementation
 
 uses
@@ -59,14 +59,6 @@ uses
   Neon.Core.Utils,
   Neon.Core.Attributes,
   Neon.Core.Persistence.JSON;
-
-function dpiValue(const AValue: Integer; ADpi: Integer): Integer;
-begin
-  if ADpi <> 96 then
-    Result := MulDiv(AValue, ADpi, 96)
-  else
-    Result := AValue;
-end;
 
 class procedure TUtilities.ShellExec(const AOperation, AFileName, AParameters: string);
 var
@@ -227,6 +219,14 @@ begin
     Result := ATrue
   else
     Result := AFalse;
+end;
+
+function dpiValue(const AValue: Integer; ADpi: Integer): Integer;
+begin
+  if ADpi <> 96 then
+    Result := MulDiv(AValue, ADpi, 96)
+  else
+    Result := AValue;
 end;
 
 class function TImageContainerSerializer.CanHandle(AType: PTypeInfo): Boolean;

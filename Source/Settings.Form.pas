@@ -138,7 +138,6 @@ end;
 
 constructor TSettingsForm.Create(Parent: HWND; AService: IAIMPServiceUI);
 var
-  LCategory: IAIMPUICategory;
   LVersionInfo: IAIMPServiceVersionInfo;
 begin
   FService := AService;
@@ -154,13 +153,9 @@ begin
   if Succeeded(FService.CreateObject(FForm, nil, IAIMPUIImageList, FImageList)) then
     CheckResult(FImageList.LoadFromResource(HInstance, 'button_images', 'PNG'));
 
-  // Main Category
-  CheckResult(FService.CreateControl(FForm, FForm, MakeString('category_title'), Self, IID_IAIMPUICategory, LCategory));
-  CheckResult(LCategory.SetPlacement(TAIMPUIControlPlacement.Create(ualClient, 0, NullRect)));
-
-  CreateProgsList(LCategory);
-  CreateEditor(LCategory);
-  CreateImport(LCategory);
+  CreateProgsList(FForm);
+  CreateEditor(FForm);
+  CreateImport(FForm);
 
   if CoreGetService(IID_IAIMPServiceVersionInfo, LVersionInfo) and (LVersionInfo.GetBuildNumber >= 2130) then
     FUIStyleLight := PropListGetInt32(FForm, AIMPUI_FORM_PROPID_STYLE) = AIMPUI_STYLE_LIGHT;
@@ -174,11 +169,11 @@ var
 begin
   // Programs Panel
   CheckResult(FService.CreateControl(FForm, AParent, MakeString('panel_programs'), Self, IID_IAIMPUIPanel, LPanel));
-  CheckResult(LPanel.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 305)));
+  CheckResult(LPanel.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 325)));
   PropListSetInt32(LPanel, AIMPUI_PANEL_PROPID_PADDING, 0);
   // Programs TreeList
   CheckResult(FService.CreateControl(FForm, LPanel, MakeString('treelist_programs'), Self, IAIMPUITreeList, FTreeListPrograms));
-  CheckResult(FTreeListPrograms.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 265, NullRect)));
+  CheckResult(FTreeListPrograms.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 285, NullRect)));
   PropListSetInt32(FTreeListPrograms, AIMPUI_TL_PROPID_COLUMN_VISIBLE, 0);
   PropListSetInt32(FTreeListPrograms, AIMPUI_TL_PROPID_BORDERS, AIMPUI_FLAGS_BORDER_BOTTOM);
   PropListSetInt32(FTreeListPrograms, AIMPUI_TL_PROPID_NODE_HEIGHT, 50);
@@ -194,12 +189,12 @@ begin
   PropListSetInt32(LMenuItem, AIMP_MENUITEM_PROPID_DEFAULT, 1);
   // Programs Add Button
   CheckResult(FService.CreateControl(FForm, LPanel, MakeString('button_add'), Self, IAIMPUIButton, FButtonAdd));
-  CheckResult(FButtonAdd.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(292, 272, 100, 25))));
+  CheckResult(FButtonAdd.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(302, 292, 100, 25))));
   PropListSetInt32(FButtonAdd, AIMPUI_BUTTON_PROPID_STYLE, AIMPUI_FLAGS_BUTTON_STYLE_DROPDOWNBUTTON);
   PropListSetObj(FButtonAdd, AIMPUI_BUTTON_PROPID_DROPDOWNMENU, FDropDownMenuAdd);
   // Programs Delete Button
   CheckResult(FService.CreateControl(FForm, LPanel, MakeString('button_delete'), Self, IAIMPUIButton, FButtonDelete));
-  CheckResult(FButtonDelete.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(401, 272, 70, 25))));
+  CheckResult(FButtonDelete.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(411, 292, 70, 25))));
 end;
 
 procedure TSettingsForm.CreateEditor(AParent: IAIMPUIWinControl);
@@ -222,7 +217,7 @@ begin
   // Path
   FLabelPath := CreateLabel(LGroupBox, 'label_path', Bounds(11, 9, 0, 0));
   CheckResult(FService.CreateControl(FForm, LGroupBox, MakeString('edit_path'), Self, IAIMPUIEdit, FEditPath));
-  CheckResult(FEditPath.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(9, 25, 462, 0))));
+  CheckResult(FEditPath.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(9, 25, 472, 0))));
   CheckResult(FEditPath.AddButton(TAIMPUINotifyEventAdapter.Create(OnPathButtonClick), LButton));
   PropListSetObj(LButton, AIMPUI_EDITBUTTON_PROPID_CAPTION, MakeString('...'));
   PropListSetInt32(LButton, AIMPUI_EDITBUTTON_PROPID_WIDTH, 50);
@@ -233,7 +228,7 @@ begin
   // Params
   FLabelParams := CreateLabel(LGroupBox, 'label_params', Bounds(210, 52, 0, 0));
   CheckResult(FService.CreateControl(FForm, LGroupBox, MakeString('edit_params'), Self, IAIMPUIEdit, FEditParams));
-  CheckResult(FEditParams.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(208, 68, 263, 0))));
+  CheckResult(FEditParams.SetPlacement(TAIMPUIControlPlacement.Create(ualNone, Bounds(208, 68, 273, 0))));
   PropListSetObj(FEditParams, AIMPUI_BUTTONEDEDIT_PROPID_BUTTONSIMAGES, FImageList);
   CheckResult(FEditParams.AddButton(TAIMPUINotifyEventAdapter.Create(OnParamsButtonClick), LButton));
   PropListSetInt32(LButton, AIMPUI_EDITBUTTON_PROPID_IMAGEINDEX, 0);
@@ -686,8 +681,7 @@ begin
   FUIStyleLight := Style = AIMPUI_STYLE_LIGHT;
 end;
 
-procedure TSettingsForm.OnCustomDrawNode(Sender: IAIMPUITreeList;
-  DC: HDC; R: TRect; Node: IAIMPUITreeListNode; var Handled: LongBool);
+procedure TSettingsForm.OnCustomDrawNode(Sender: IAIMPUITreeList; DC: HDC; R: TRect; Node: IAIMPUITreeListNode; var Handled: LongBool);
 const
   clItemSelectedLight = TColor($9FD5FF);
   clItemSelectedDark = TColor($23507C);
@@ -752,7 +746,7 @@ begin
     LCanvas.Font.Style := LCanvas.Font.Style - [fsBold];
     // Path
     LCanvas.TextOut(R.Left + dpiValue(52, LDpi), R.Top + dpiValue(18, LDpi), IfThen(LItem.ItemType = Url, 'URL: ', FPathLangStr + ': '));
-    LRect := Bounds(62 + LCanvas.TextWidth(FPathLangStr), dpiValue(18, LDpi), R.Width - (dpiValue(70, LDpi) + LCanvas.TextWidth(FPathLangStr)), 20);
+    LRect := Bounds(dpiValue(62, LDpi) + LCanvas.TextWidth(FPathLangStr), dpiValue(18, LDpi), R.Width - (dpiValue(70, LDpi) + LCanvas.TextWidth(FPathLangStr)), 20);
     DrawText(LCanvas.Handle, LItem.Path, LItem.Path.Length, LRect, DT_PATH_ELLIPSIS or DT_NOPREFIX);
     // Params
     LCanvas.TextOut(R.Left + dpiValue(52, LDpi), R.Top + dpiValue(32, LDpi), FParamLangStr + ': ');
